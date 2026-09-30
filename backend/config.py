@@ -25,12 +25,18 @@ if AXELLE_MODE not in {"demo", "live"}:
     raise ValueError("AXELLE_MODE must be 'demo' or 'live'")
 
 # ── Flask ───────────────────────────────────────────────────
-FLASK_ENV = _get_env("FLASK_ENV", "development")
+_default_flask_env = "production" if os.environ.get("VERCEL") else "development"
+FLASK_ENV = _get_env("FLASK_ENV", _default_flask_env)
 FLASK_PORT = int(_get_env("FLASK_PORT", "5000"))
 FLASK_DEBUG = FLASK_ENV == "development"
 
 # ── CORS ───────────────────────────────────────────────────
 CORS_ORIGINS = _get_env_list("CORS_ORIGINS", "http://localhost:5173")
+_vercel_url = _get_env("VERCEL_URL", "")
+if _vercel_url:
+    _origin = _vercel_url if _vercel_url.startswith("http") else f"https://{_vercel_url}"
+    if _origin not in CORS_ORIGINS:
+        CORS_ORIGINS.append(_origin)
 
 # ── Wazuh (Phase 3 — placeholders) ──────────────────────────
 WAZUH_URL = _get_env("WAZUH_URL", "")

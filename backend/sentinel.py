@@ -72,7 +72,7 @@ def create_app() -> Flask:
     return app
 
 
-# Create the app instance for gunicorn / flask run
+# Create the app instance for gunicorn / flask run / Vercel
 app = create_app()
 
 

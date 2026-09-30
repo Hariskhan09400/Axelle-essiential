@@ -1,10 +1,11 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "axelle-sentinel",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "python backend/sentinel.py",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
