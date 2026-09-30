@@ -10,7 +10,7 @@ import type {
   ApiError,
 } from '@/types';
 
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+const API_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 async function fetchAPI<T>(
   path: string,
