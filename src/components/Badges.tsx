@@ -63,3 +63,4 @@ export function ModeBadge({ mode }: { mode: 'demo' | 'live' }) {
     </span>
   );
 }
+
