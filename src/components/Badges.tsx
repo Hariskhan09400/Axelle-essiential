@@ -196,3 +196,5 @@ export function ModeBadge({
     </span>
   );
 }
+
+//ha thik hai 
