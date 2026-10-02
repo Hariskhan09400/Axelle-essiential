@@ -196,4 +196,3 @@ export function ModeBadge({
     </span>
   );
 }
-
