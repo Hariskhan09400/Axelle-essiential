@@ -189,7 +189,7 @@ export function ModeBadge({
 
   return (
     <span
-      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-2xs font-mono text-accent-300 bg-accent-500/10 border-accent-500/30"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-2xs font-mono text-accent-300 bg-accent-500/10 border border-accent-500/30"
       aria-label="Demo mode"
     >
       DEMO
