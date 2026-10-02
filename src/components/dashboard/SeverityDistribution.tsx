@@ -4,19 +4,19 @@ import { ErrorState } from '@/components/EmptyError';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const severityColors: Record<string, string> = {
-  critical: '#ef4444',
-  high: '#f97316',
-  medium: '#f59e0b',
-  low: '#3b82f6',
-  info: '#64748b',
+  critical: 'var(--severity-critical)',
+  high: 'var(--severity-high)',
+  medium: 'var(--severity-medium)',
+  low: 'var(--severity-low)',
+  info: 'var(--severity-info)',
 };
 
 const tooltipStyle = {
-  backgroundColor: '#0f1420',
-  border: '1px solid #2d3848',
+  backgroundColor: 'var(--brand-surface)',
+  border: '1px solid var(--brand-border)',
   borderRadius: '6px',
   fontSize: '12px',
-  color: '#c8d0db',
+  color: 'var(--brand-text)',
 };
 
 export function SeverityDistribution() {
@@ -45,12 +45,12 @@ export function SeverityDistribution() {
             dataKey="value"
           >
             {chartData.map((entry) => (
-              <Cell key={entry.name} fill={severityColors[entry.name] ?? '#64748b'} />
+              <Cell key={entry.name} fill={severityColors[entry.name] ?? 'var(--severity-info)'} />
             ))}
           </Pie>
           <Tooltip contentStyle={tooltipStyle} />
           <Legend
-            wrapperStyle={{ fontSize: '11px', color: '#a4afbd' }}
+            wrapperStyle={{ fontSize: '11px', color: 'var(--brand-muted)' }}
             iconType="circle"
             iconSize={8}
           />

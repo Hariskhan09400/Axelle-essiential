@@ -6,11 +6,11 @@ import {
 } from 'recharts';
 
 const tooltipStyle = {
-  backgroundColor: '#0f1420',
-  border: '1px solid #2d3848',
+  backgroundColor: 'var(--brand-surface)',
+  border: '1px solid var(--brand-border)',
   borderRadius: '6px',
   fontSize: '12px',
-  color: '#c8d0db',
+  color: 'var(--brand-text)',
 };
 
 export function EventTimeline() {
@@ -28,18 +28,18 @@ export function EventTimeline() {
         <AreaChart data={data.events_per_bucket} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="eventGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#22d3ee" stopOpacity={0} />
+              <stop offset="5%" stopColor="var(--brand-gold)" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="var(--brand-gold)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1a2130" />
-          <XAxis dataKey="bucket" tick={{ fontSize: 10, fill: '#7c8898' }} axisLine={{ stroke: '#2d3848' }} />
-          <YAxis tick={{ fontSize: 10, fill: '#7c8898' }} axisLine={{ stroke: '#2d3848' }} allowDecimals={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
+          <XAxis dataKey="bucket" tick={{ fontSize: 10, fill: 'var(--chart-muted)' }} axisLine={{ stroke: 'var(--line)' }} />
+          <YAxis tick={{ fontSize: 10, fill: 'var(--chart-muted)' }} axisLine={{ stroke: 'var(--line)' }} allowDecimals={false} />
           <Tooltip contentStyle={tooltipStyle} />
           <Area
             type="monotone"
             dataKey="count"
-            stroke="#22d3ee"
+            stroke="var(--brand-gold)"
             strokeWidth={2}
             fill="url(#eventGradient)"
           />

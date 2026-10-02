@@ -27,7 +27,7 @@ export function MainLayout() {
 
         <div className="flex min-h-[100dvh] w-full flex-1 flex-col">
           <Header onMenuToggle={() => setMobileSidebarOpen((value) => !value)} />
-          <main className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-3 sm:px-4 lg:pb-6 lg:pt-4 lg:px-6">
+          <main className="min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-0 pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-3 lg:pb-6 lg:pt-4">
             <Outlet />
           </main>
         </div>

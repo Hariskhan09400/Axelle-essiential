@@ -43,7 +43,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2 max-w-sm">
+      <div className="toast-container fixed bottom-4 right-4 z-50 space-y-2 max-w-sm">
         {toasts.map((t) => {
           const cfg = toastConfig[t.type];
           const Icon = cfg.Icon;

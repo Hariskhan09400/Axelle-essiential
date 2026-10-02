@@ -6,31 +6,31 @@ export default {
       colors: {
         // ── Base / Surfaces ──────────────────────────────
         base: {
-          950: '#070a0f',
-          900: '#0b0f16',
-          850: '#0f1420',
-          800: '#131927',
-          750: '#1a2130',
-          700: '#222a3b',
-          600: '#2d3848',
-          500: '#3b475c',
-          400: '#5a6678',
-          300: '#7c8898',
-          200: '#a4afbd',
-          100: '#c8d0db',
+          950: 'rgb(var(--base-950) / <alpha-value>)',
+          900: 'rgb(var(--base-900) / <alpha-value>)',
+          850: 'rgb(var(--base-850) / <alpha-value>)',
+          800: 'rgb(var(--base-800) / <alpha-value>)',
+          750: 'rgb(var(--base-750) / <alpha-value>)',
+          700: 'rgb(var(--base-700) / <alpha-value>)',
+          600: 'rgb(var(--base-600) / <alpha-value>)',
+          500: 'rgb(var(--base-500) / <alpha-value>)',
+          400: 'rgb(var(--base-400) / <alpha-value>)',
+          300: 'rgb(var(--base-300) / <alpha-value>)',
+          200: 'rgb(var(--base-200) / <alpha-value>)',
+          100: 'rgb(var(--base-100) / <alpha-value>)',
         },
-        // ── Accent (electric teal / cyan) ────────────────
+        // ── Accent (AxelleVault gold) ────────────────────
         accent: {
-          50: '#ecfeff',
-          100: '#cffafe',
-          200: '#a5f3fc',
-          300: '#67e8f9',
-          400: '#22d3ee',
-          500: '#06b6d4',
-          600: '#0891b2',
-          700: '#0e7490',
-          800: '#155e75',
-          900: '#164e63',
+          50: 'rgb(var(--accent-50) / <alpha-value>)',
+          100: 'rgb(var(--accent-100) / <alpha-value>)',
+          200: 'rgb(var(--accent-200) / <alpha-value>)',
+          300: 'rgb(var(--accent-300) / <alpha-value>)',
+          400: 'rgb(var(--accent-400) / <alpha-value>)',
+          500: 'rgb(var(--accent-500) / <alpha-value>)',
+          600: 'rgb(var(--accent-600) / <alpha-value>)',
+          700: 'rgb(var(--accent-700) / <alpha-value>)',
+          800: 'rgb(var(--accent-800) / <alpha-value>)',
+          900: 'rgb(var(--accent-900) / <alpha-value>)',
         },
         // ── Severity ─────────────────────────────────────
         critical: {
@@ -99,7 +99,7 @@ export default {
         },
         // ── Status ───────────────────────────────────────
         status: {
-          new: '#22d3ee',
+          new: 'rgb(var(--accent-500) / <alpha-value>)',
           investigating: '#fbbf24',
           confirmed: '#ef4444',
           false_positive: '#64748b',
@@ -140,7 +140,7 @@ export default {
         },
       },
       boxShadow: {
-        'glow-accent': '0 0 20px rgba(6, 182, 212, 0.15)',
+        'glow-accent': '0 0 20px rgb(var(--accent-500) / 0.15)',
         'glow-critical': '0 0 20px rgba(239, 68, 68, 0.25)',
         'glow-high': '0 0 20px rgba(249, 115, 22, 0.20)',
         'inner-glow': 'inset 0 1px 0 0 rgba(255, 255, 255, 0.05)',

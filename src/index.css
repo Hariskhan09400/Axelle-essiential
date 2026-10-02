@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,41 @@
 
 @layer base {
   :root {
+    --brand-gold: rgb(var(--accent-500));
+    --brand-navy: rgb(var(--base-950));
+    --brand-surface: rgb(var(--base-850));
+    --brand-muted: rgb(var(--base-300));
+    --brand-border: rgb(var(--base-700));
+    --brand-text: rgb(var(--base-100));
+    --severity-critical: #ef4444;
+    --severity-high: #f97316;
+    --severity-medium: #f59e0b;
+    --severity-low: #3b82f6;
+    --severity-info: #64748b;
+    --base-950: 7 13 26;
+    --base-900: 10 15 30;
+    --base-850: 15 22 41;
+    --base-800: 19 28 49;
+    --base-750: 27 38 60;
+    --base-700: 38 51 77;
+    --base-600: 55 71 101;
+    --base-500: 75 94 128;
+    --base-400: 102 121 160;
+    --base-300: 129 144 184;
+    --base-200: 177 189 214;
+    --base-100: 242 244 248;
+    --accent-50: 255 250 235;
+    --accent-100: 255 241 196;
+    --accent-200: 255 224 138;
+    --accent-300: 247 210 121;
+    --accent-400: 232 184 74;
+    --accent-500: 232 184 74;
+    --accent-600: 210 155 47;
+    --accent-700: 173 123 35;
+    --accent-800: 115 81 23;
+    --accent-900: 74 53 17;
+    --line: var(--brand-border);
+    --chart-muted: var(--brand-muted);
     color-scheme: dark;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -21,20 +56,36 @@
   html {
     color-scheme: dark;
     min-height: 100%;
+    width: 100%;
     font-size: 16px;
+    overflow-x: hidden;
+    touch-action: manipulation;
+    letter-spacing: 0;
   }
 
   body {
     @apply bg-base-950 font-sans text-base-100 antialiased;
     margin: 0;
     min-height: 100dvh;
+    width: 100%;
     overflow-x: hidden;
+    touch-action: manipulation;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     -webkit-tap-highlight-color: transparent;
   }
 
   #root {
+    width: 100%;
     min-height: 100dvh;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--brand-text);
+    letter-spacing: 0;
   }
 
   button,
@@ -48,10 +99,13 @@
   select,
   textarea {
     font-size: 16px;
+    max-width: 100%;
+    min-width: 0;
   }
 
   ::selection {
-    @apply bg-accent-500/30 text-white;
+    background: rgb(var(--accent-500) / 0.3);
+    color: white;
   }
 
   ::-webkit-scrollbar {
@@ -71,7 +125,13 @@
 
 @layer components {
   .card {
-    @apply rounded-lg border border-base-700 bg-base-850;
+    @apply rounded-md border border-base-700 bg-base-850;
+  }
+
+  .card .card {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
 
   .card-hover {
@@ -79,8 +139,9 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
     min-height: 44px;
+    touch-action: manipulation;
   }
 
   .btn-primary {
@@ -92,11 +153,11 @@
   }
 
   .btn-outline {
-    @apply btn border border-base-600 text-base-200 hover:border-base-500 hover:text-base-100;
+    @apply btn border border-accent-500/50 text-base-100 hover:border-accent-400 hover:bg-accent-500/10;
   }
 
   .input {
-    @apply min-h-[44px] rounded-md border border-base-700 bg-base-900 px-3 py-2 text-sm text-base-100 placeholder-base-400 transition-colors focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500/30;
+    @apply min-h-[44px] rounded-md border border-base-700 bg-base-900 px-3 py-2 text-base text-base-100 placeholder-base-400 transition-colors focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/30;
   }
 
   .table-row-hover {
@@ -117,8 +178,8 @@
 
   .grid-bg {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      linear-gradient(rgb(var(--accent-500) / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--accent-500) / 0.025) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
@@ -146,7 +207,79 @@
   }
 }
 
+main {
+  width: 100%;
+  min-width: 0;
+}
+
+main > div[class*="max-w-"] {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding: 1rem var(--page-gutter, 1rem);
+}
+
+main .overflow-x-auto {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+main .overflow-x-auto table {
+  min-width: 44rem;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  touch-action: manipulation;
+}
+
+.recharts-cartesian-grid line,
+.recharts-cartesian-axis-line {
+  stroke: var(--line);
+}
+
+.recharts-cartesian-axis-tick-value,
+.recharts-legend-item-text {
+  fill: var(--chart-muted);
+  color: var(--chart-muted);
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: var(--brand-surface) !important;
+  border-color: var(--brand-border) !important;
+  color: var(--brand-text) !important;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-gutter: 1.5rem;
+  }
+
+  main > div[class*="max-w-"] {
+    padding-block: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-gutter: 2rem;
+  }
+}
+
 @media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
   .card {
     @apply overflow-hidden;
   }
@@ -155,5 +288,11 @@
   .input,
   .sidebar-link {
     min-height: 44px;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
   }
 }
