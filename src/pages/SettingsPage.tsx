@@ -9,7 +9,7 @@ export function SettingsPage() {
       title: 'Backend Connection',
       icon: Server,
       items: [
-        { label: 'API URL', value: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' },
+        { label: 'API URL', value: import.meta.env.VITE_API_URL || '/api' },
         { label: 'Mode', value: health?.mode?.toUpperCase() ?? 'DEMO' },
           { label: 'Mode', value: health?.mode?.toUpperCase() ?? 'unknown' },
         { label: 'Status', value: health?.status ?? 'unknown' },
