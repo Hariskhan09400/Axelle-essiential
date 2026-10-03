@@ -1,5 +1,6 @@
 import type { Statistics } from '@/types';
 import { Activity, ShieldAlert, FolderClosed, AlertOctagon } from 'lucide-react';
+import { formatNumber } from '@/utils/format';
 
 interface CardProps {
   stats: Statistics;
@@ -28,14 +29,14 @@ export function OverviewCards({ stats }: CardProps) {
         return (
           <div
             key={card.key}
-            className={`card card-hover p-4 ${card.key === 'critical' && val > 0 ? 'shadow-glow-critical' : ''}`}
+            className="card card-hover min-w-0 p-4"
           >
             <div className="flex items-center justify-between mb-2">
               <div className={`w-9 h-9 rounded-lg ${card.bg} ${card.border} border flex items-center justify-center`}>
                 <Icon className={`w-4.5 h-4.5 ${card.color}`} />
               </div>
             </div>
-            <div className="text-2xl font-bold text-base-100 mono">{val.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-base-100 mono">{formatNumber(val)}</div>
             <div className="text-xs text-base-400 mt-0.5">{card.label}</div>
           </div>
         );

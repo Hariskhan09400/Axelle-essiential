@@ -1,3 +1,5 @@
+import { RefreshCw } from 'lucide-react';
+import { Button, PageHeader } from '@/components/ui';
 import { OverviewCards } from '@/components/dashboard/OverviewCards';
 import { LiveEventsTable } from '@/components/dashboard/LiveEventsTable';
 import { EventTimeline } from '@/components/dashboard/EventTimeline';
@@ -12,49 +14,73 @@ import { ErrorState } from '@/components/EmptyError';
 export function DashboardPage() {
   const { data: stats, isLoading, isError, refetch } = useStatistics();
 
+  const today = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+
   return (
-    <div className="p-4 lg:p-6 space-y-4 max-w-[1600px] mx-auto">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-semibold text-base-100">Security Overview</h1>
-          <p className="text-xs text-base-400 mt-0.5">Security telemetry overview</p>
-        </div>
-      </div>
+    <div className="mx-auto w-full max-w-[1600px] space-y-4 p-3 sm:p-4 lg:space-y-6 lg:p-6">
+      <PageHeader
+        title="Dashboard"
+        subtitle="Alerts, sources and activity across your hosts"
+        actions={
+          <>
+            <span className="hidden text-xs text-base-400 md:inline">{today}</span>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => refetch()}
+              aria-label="Refresh statistics"
+            >
+              <RefreshCw className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+          </>
+        }
+      />
 
       {/* Overview cards */}
-      {isLoading ? (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
-        </div>
-      ) : isError || !stats ? (
-        <ErrorState message="Failed to load security statistics" onRetry={() => refetch()} />
-      ) : (
-        <OverviewCards stats={stats} />
-      )}
+      <section aria-label="Key numbers">
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
+          </div>
+        ) : isError || !stats ? (
+          <ErrorState message="Failed to load security statistics" onRetry={() => refetch()} />
+        ) : (
+          <OverviewCards stats={stats} />
+        )}
+      </section>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2"><EventTimeline /></div>
-        <SeverityDistribution />
-      </div>
+      <section aria-label="Trends" className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2"><EventTimeline /></div>
+        <div className="min-w-0"><SeverityDistribution /></div>
+      </section>
 
-      {/* Second row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TopSourceIPs />
-        <TopTechniques />
-      </div>
+      {/* Sources and techniques */}
+      <section aria-label="Sources and techniques" className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <div className="min-w-0"><TopSourceIPs /></div>
+        <div className="min-w-0"><TopTechniques /></div>
+      </section>
 
-      <AlertCards />
+      {/* Alerts */}
+      <section aria-label="Alerts" className="min-w-0">
+        <AlertCards />
+      </section>
 
       {/* Live events table */}
-      <div className="card">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-base-700">
+      <section aria-label="Recent events" className="card min-w-0 overflow-hidden">
+        <div className="flex flex-col gap-0.5 border-b border-base-700 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-sm font-semibold text-base-200">Recent Events</h2>
           <span className="text-2xs text-base-400">Most recently received events</span>
         </div>
-        <LiveEventsTable onEventClick={() => undefined} compact />
-      </div>
+        <div className="overflow-x-auto">
+          <LiveEventsTable onEventClick={() => undefined} compact />
+        </div>
+      </section>
     </div>
   );
 }

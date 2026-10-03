@@ -95,6 +95,11 @@
     font: inherit;
   }
 
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent-400));
+    outline-offset: 2px;
+  }
+
   input,
   select,
   textarea {
@@ -145,7 +150,7 @@
   }
 
   .btn-primary {
-    @apply btn bg-accent-500 text-base-950 shadow-glow-accent hover:bg-accent-400;
+    @apply btn bg-accent-500 text-base-950 hover:bg-accent-400;
   }
 
   .btn-ghost {
@@ -212,13 +217,6 @@ main {
   min-width: 0;
 }
 
-main > div[class*="max-w-"] {
-  width: 100%;
-  max-width: none;
-  margin-inline: 0;
-  padding: 1rem var(--page-gutter, 1rem);
-}
-
 main .overflow-x-auto {
   width: 100%;
   min-width: 0;
@@ -226,10 +224,6 @@ main .overflow-x-auto {
   overflow-x: auto;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
-}
-
-main .overflow-x-auto table {
-  min-width: 44rem;
 }
 
 button,
@@ -258,18 +252,8 @@ a {
 }
 
 @media (min-width: 768px) {
-  :root {
-    --page-gutter: 1.5rem;
-  }
-
-  main > div[class*="max-w-"] {
-    padding-block: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  :root {
-    --page-gutter: 2rem;
+  main .overflow-x-auto table {
+    min-width: 44rem;
   }
 }
 
@@ -278,10 +262,6 @@ a {
   select,
   textarea {
     font-size: 16px !important;
-  }
-
-  .card {
-    @apply overflow-hidden;
   }
 
   .btn,
@@ -294,5 +274,16 @@ a {
     left: 1rem;
     right: 1rem;
     max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

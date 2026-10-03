@@ -3,6 +3,7 @@ import { SeverityBadge } from '@/components/Badges';
 import { EmptyState, ErrorState } from '@/components/EmptyError';
 import { CardSkeleton } from '@/components/Skeletons';
 import { FolderClosed, AlertOctagon, Clock, CheckCircle } from 'lucide-react';
+import { PageHeader, Timestamp } from '@/components/ui';
 
 const statusConfig: Record<string, { label: string; classes: string; Icon: typeof Clock }> = {
   open: { label: 'Open', classes: 'text-critical-300 bg-critical-500/10 border-critical-500/30', Icon: AlertOctagon },
@@ -14,11 +15,8 @@ export function IncidentsPage() {
   const { data: incidents, isLoading, isError, refetch } = useIncidents();
 
   return (
-    <div className="p-4 lg:p-6 space-y-4 max-w-[1600px] mx-auto">
-      <div>
-        <h1 className="text-lg font-semibold text-base-100">Incidents</h1>
-        <p className="text-xs text-base-400 mt-0.5">Security incidents and linked alerts</p>
-      </div>
+    <div className="mx-auto w-full max-w-[1600px] space-y-4 p-3 sm:p-4 lg:space-y-6 lg:p-6">
+      <PageHeader title="Incidents" subtitle="Security incidents and linked alerts" />
 
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -38,14 +36,14 @@ export function IncidentsPage() {
             const status = statusConfig[inc.status] ?? statusConfig.open;
             const StatusIcon = status.Icon;
             return (
-              <div key={inc.id} className="card card-hover p-4 space-y-3">
+              <div key={inc.id} className="card card-hover min-w-0 space-y-3 p-4">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs mono text-base-400">{inc.id}</span>
                       <SeverityBadge severity={inc.severity} size="xs" />
                     </div>
-                    <h3 className="text-sm font-medium text-base-100">{inc.title}</h3>
+                    <h3 className="break-words text-sm font-medium text-base-100">{inc.title}</h3>
                   </div>
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs font-medium ${status.classes}`}>
                     <StatusIcon className="w-3 h-3" />
@@ -53,10 +51,10 @@ export function IncidentsPage() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4 text-2xs text-base-400">
-                  <span>Created: <span className="mono text-base-300">{new Date(inc.created_at).toLocaleString()}</span></span>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-2xs text-base-400">
+                  <span>Created: <span className="mono text-base-300"><Timestamp value={inc.created_at} /></span></span>
                   {inc.resolved_at && (
-                    <span>Resolved: <span className="mono text-base-300">{new Date(inc.resolved_at).toLocaleString()}</span></span>
+                    <span>Resolved: <span className="mono text-base-300"><Timestamp value={inc.resolved_at} /></span></span>
                   )}
                 </div>
 

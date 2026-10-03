@@ -24,7 +24,7 @@ export function AlertCards() {
             type="button"
             key={event.id}
             onClick={() => navigate(`/events/${encodeURIComponent(event.id)}`)}
-            className={`card card-hover p-3 text-left space-y-2 ${event.severity === 'critical' ? 'shadow-glow-critical' : ''}`}
+            className="card card-hover min-h-24 p-3 text-left"
           >
             <div className="flex items-center justify-between gap-2">
               <SeverityBadge severity={event.severity} size="xs" />

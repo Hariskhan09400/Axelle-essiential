@@ -1,5 +1,7 @@
 import { useHealth } from '@/services/hooks';
 import { Settings, Server, Shield, Cpu } from 'lucide-react';
+import { ModeBadge } from '@/components/Badges';
+import { PageHeader } from '@/components/ui';
 
 export function SettingsPage() {
   const { data: health } = useHealth();
@@ -11,7 +13,6 @@ export function SettingsPage() {
       items: [
         { label: 'API URL', value: import.meta.env.VITE_API_URL || '/api' },
         { label: 'Mode', value: health?.mode?.toUpperCase() ?? 'DEMO' },
-          { label: 'Mode', value: health?.mode?.toUpperCase() ?? 'unknown' },
         { label: 'Status', value: health?.status ?? 'unknown' },
       ],
     },
@@ -36,11 +37,12 @@ export function SettingsPage() {
   ];
 
   return (
-    <div className="p-4 lg:p-6 space-y-4 max-w-[1200px] mx-auto">
-      <div>
-        <h1 className="text-lg font-semibold text-base-100">Settings</h1>
-        <p className="text-xs text-base-400 mt-0.5">System configuration and integration status</p>
-      </div>
+    <div className="mx-auto w-full max-w-[1600px] space-y-4 p-3 sm:p-4 lg:space-y-6 lg:p-6">
+      <PageHeader
+        title="Settings"
+        subtitle="System configuration and integration status"
+        actions={<ModeBadge mode={health?.mode ?? 'demo'} />}
+      />
 
       <div className="space-y-4">
         {settingsGroups.map((group) => {
@@ -54,8 +56,8 @@ export function SettingsPage() {
               <div className="space-y-2">
                 {group.items.map((item) => (
                   <div key={item.label} className="flex items-center justify-between py-2 border-b border-base-700/30 last:border-0">
-                    <span className="text-xs text-base-400">{item.label}</span>
-                    <span className="text-xs text-base-200 mono">{item.value}</span>
+                    <span className="shrink-0 text-xs text-base-400">{item.label}</span>
+                    <span className="min-w-0 break-all text-right text-xs text-base-200 mono">{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -82,10 +84,10 @@ export function SettingsPage() {
             { phase: 'Phase 8', label: 'Host monitoring', done: false },
             { phase: 'Phase 9', label: 'Advanced detection & correlation', done: false },
           ].map((p) => (
-            <div key={p.phase} className="flex items-center gap-3 py-1.5">
-              <span className={`w-2 h-2 rounded-full ${p.done ? 'bg-status-resolved' : 'bg-base-600'}`} />
-              <span className="text-xs mono text-base-400 w-16">{p.phase}</span>
-              <span className={`text-xs ${p.done ? 'text-base-200' : 'text-base-400'}`}>{p.label}</span>
+            <div key={p.phase} className="flex min-w-0 items-start gap-3 py-1.5">
+              <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${p.done ? 'bg-status-resolved' : 'bg-base-600'}`} />
+              <span className="w-16 shrink-0 text-xs text-base-400 mono">{p.phase}</span>
+              <span className={`min-w-0 break-words text-xs ${p.done ? 'text-base-200' : 'text-base-400'}`}>{p.label}</span>
             </div>
           ))}
         </div>

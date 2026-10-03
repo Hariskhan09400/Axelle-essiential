@@ -54,7 +54,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             >
               <Icon className="w-4 h-4 mt-0.5 shrink-0" />
               <span className="text-sm text-base-100 flex-1">{t.message}</span>
-              <button onClick={() => dismiss(t.id)} className="text-base-400 hover:text-base-200 shrink-0">
+              <button
+                type="button"
+                onClick={() => dismiss(t.id)}
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded text-base-400 hover:bg-base-800 hover:text-base-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400"
+                aria-label="Dismiss notification"
+              >
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>

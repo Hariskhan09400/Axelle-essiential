@@ -41,7 +41,7 @@ export function Sidebar({
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-accent-500/30 bg-accent-500/10">
             <ShieldCheck className="h-5 w-5 text-accent-400" />
           </div>
-          {!collapsed && !mobile && (
+          {(!collapsed || mobile) && (
             <div className="overflow-hidden">
               <div className="text-sm font-semibold text-base-100 leading-tight whitespace-nowrap">Axelle Sentinel</div>
               <div className="text-2xs text-base-400 leading-tight whitespace-nowrap">SOC / SIEM Lab</div>
@@ -70,7 +70,7 @@ export function Sidebar({
               to={item.to}
               onClick={onClose}
               className={({ isActive }) =>
-                `sidebar-link ${isActive ? 'sidebar-link-active' : ''} ${collapsed && !mobile ? 'justify-center' : ''}`
+                `sidebar-link focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-400 ${isActive ? 'sidebar-link-active' : ''} ${collapsed && !mobile ? 'justify-center' : ''}`
               }
               title={collapsed && !mobile ? item.label : undefined}
             >
@@ -86,8 +86,9 @@ export function Sidebar({
           <button
             type="button"
             onClick={onToggle}
-            className="sidebar-link w-full justify-center"
+            className="sidebar-link w-full justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-400"
             title={collapsed ? 'Expand' : 'Collapse'}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <span className="text-sm text-base-400">{'>>'}</span> : <span className="text-2xs text-base-400">{'<< Collapse'}</span>}
           </button>

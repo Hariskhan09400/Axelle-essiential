@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useEventById } from '@/services/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
@@ -22,7 +23,7 @@ function DetailRow({
     <div className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-base-800/50 transition-colors">
       <Icon className="w-4 h-4 text-base-400 shrink-0" />
       <span className="text-xs text-base-400 w-28 shrink-0">{label}</span>
-      <span className={`text-sm text-base-100 flex-1 ${mono ? 'mono' : ''}`}>
+      <span className={`min-w-0 flex-1 break-words text-sm text-base-100 ${mono ? 'mono' : ''}`}>
         {value ?? '—'}
       </span>
     </div>
@@ -178,7 +179,7 @@ function EventDetails({ event }: { event: SecurityEvent }) {
           <FileJson className="w-4 h-4 text-base-400" />
           <h3 className="text-xs font-semibold text-base-300 uppercase tracking-wider">Raw Event</h3>
         </div>
-        <pre className="card p-3 text-xs mono text-base-300 overflow-x-auto max-h-64 overflow-y-auto">
+        <pre className="card max-h-64 max-w-full overflow-y-auto whitespace-pre-wrap break-words p-3 text-xs text-base-300 mono">
           {JSON.stringify(event.raw_event, null, 2)}
         </pre>
       </div>
@@ -194,26 +195,90 @@ export function EventDrawer({
   onClose: () => void;
 }) {
   const { data: event, isLoading, isError, refetch } = useEventById(eventId ?? undefined);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const isOpen = Boolean(eventId);
+
+  closeRef.current = onClose;
+
+  useEffect(() => {
+    if (panelRef.current) panelRef.current.inert = !isOpen;
+    if (!isOpen) {
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
+      return;
+    }
+
+    previousFocusRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    panelRef.current?.querySelector<HTMLElement>('button[aria-label="Close event details"]')?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeRef.current();
+        return;
+      }
+      if (event.key !== 'Tab' || !panelRef.current) return;
+
+      const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      )).filter((element) => element.offsetParent !== null);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) {
+        event.preventDefault();
+        panelRef.current.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isOpen]);
 
   return (
     <>
       {/* Backdrop */}
-      {eventId && (
+      {isOpen && (
         <div
-          className="fixed inset-0 bg-base-950/60 backdrop-blur-sm z-40 animate-fade-in"
+          aria-hidden="true"
+          className="fixed inset-0 z-40 bg-base-950/70 transition-opacity duration-200 motion-reduce:transition-none"
           onClick={onClose}
         />
       )}
 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-md bg-base-850 border-l border-base-700 z-50 overflow-y-auto transition-transform duration-300 ${
-          eventId ? 'translate-x-0' : 'translate-x-full'
+        ref={panelRef}
+        role="dialog"
+        aria-modal={isOpen}
+        aria-labelledby="event-drawer-title"
+        aria-hidden={!isOpen}
+        tabIndex={-1}
+        className={`fixed inset-x-0 bottom-0 z-50 max-h-[94dvh] overflow-y-auto rounded-t-xl border border-base-700 bg-base-850 transition-transform duration-200 motion-reduce:transition-none md:inset-y-0 md:left-auto md:right-0 md:h-full md:max-h-none md:w-full md:max-w-lg md:rounded-none md:border-y-0 md:border-r-0 ${
+          isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-x-full'
         }`}
       >
-        <div className="sticky top-0 bg-base-850/95 backdrop-blur-sm border-b border-base-700 px-4 py-3 flex items-center justify-between z-10">
-          <h2 className="text-sm font-semibold text-base-100">Event Details</h2>
-          <button onClick={onClose} className="text-base-400 hover:text-base-200 transition-colors">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-base-700 bg-base-850 px-4 py-3">
+          <h2 id="event-drawer-title" className="text-sm font-semibold text-base-100">Event Details</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-md text-base-300 transition-colors hover:bg-base-800 hover:text-base-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400"
+            aria-label="Close event details"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>

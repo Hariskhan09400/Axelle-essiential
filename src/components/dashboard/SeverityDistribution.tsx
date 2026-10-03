@@ -31,9 +31,13 @@ export function SeverityDistribution() {
     .map(([key, value]) => ({ name: key, value }));
 
   return (
-    <div className="card p-4">
+    <div className="card min-w-0 p-4">
       <h3 className="text-sm font-semibold text-base-200 mb-4">Severity Distribution</h3>
-      <ResponsiveContainer width="100%" height={200}>
+      {chartData.length === 0 ? (
+        <div className="flex h-[200px] items-center justify-center text-center text-xs text-base-400">
+          No severity data is available yet.
+        </div>
+      ) : <ResponsiveContainer width="100%" height={200}>
         <PieChart>
           <Pie
             data={chartData}
@@ -50,12 +54,12 @@ export function SeverityDistribution() {
           </Pie>
           <Tooltip contentStyle={tooltipStyle} />
           <Legend
-            wrapperStyle={{ fontSize: '11px', color: 'var(--brand-muted)' }}
+            wrapperStyle={{ fontSize: '11px', color: 'var(--brand-muted)', maxWidth: '100%' }}
             iconType="circle"
             iconSize={8}
           />
         </PieChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer>}
     </div>
   );
 }

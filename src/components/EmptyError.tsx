@@ -1,4 +1,5 @@
 import { Inbox, AlertCircle, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui';
 
 export function EmptyState({
   title = 'No data available',
@@ -35,10 +36,10 @@ export function ErrorState({
       <h3 className="text-sm font-medium text-base-200">Failed to load</h3>
       <p className="text-xs text-base-400 mt-1 max-w-xs">{message}</p>
       {onRetry && (
-        <button onClick={onRetry} className="btn-outline mt-4">
+        <Button type="button" variant="secondary" onClick={onRetry} className="mt-4">
           <RefreshCw className="w-3.5 h-3.5" />
           Retry
-        </button>
+        </Button>
       )}
     </div>
   );
