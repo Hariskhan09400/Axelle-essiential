@@ -24,6 +24,11 @@ AXELLE_MODE = _get_env("AXELLE_MODE", "demo")  # "demo" | "live"
 if AXELLE_MODE not in {"demo", "live"}:
     raise ValueError("AXELLE_MODE must be 'demo' or 'live'")
 
+# ── Ingest (live mode) ──────────────────────────────────────
+# Secret key that senders must pass in the X-API-Key header when
+# posting real events to /api/events/ingest. Leave empty to disable ingest.
+INGEST_API_KEY = _get_env("INGEST_API_KEY", "")
+
 # ── Flask ───────────────────────────────────────────────────
 _default_flask_env = "production" if os.environ.get("VERCEL") else "development"
 FLASK_ENV = _get_env("FLASK_ENV", _default_flask_env)

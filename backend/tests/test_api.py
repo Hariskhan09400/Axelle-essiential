@@ -8,8 +8,13 @@ Tests cover:
 - GET /api/hosts
 """
 
+from datetime import datetime
+
 import pytest
+
 from sentinel import create_app
+import routes.events as events_routes
+import services.in_memory_repository as repository_module
 
 
 @pytest.fixture
@@ -299,15 +304,88 @@ class TestAnalystWorkflow:
         assert response.status_code == 409
         assert response.get_json()["error"]["code"] == "CONFLICT"
 
-    def test_live_mode_never_returns_demo_events(self, client, monkeypatch):
+    def test_live_mode_keeps_event_routes_available(self, client, monkeypatch):
         import config
 
         monkeypatch.setattr(config, "AXELLE_MODE", "live")
         health = client.get("/api/health").get_json()
         events = client.get("/api/events")
         assert health == {"status": "unavailable", "mode": "live"}
-        assert events.status_code == 503
-        assert events.get_json()["error"]["code"] == "LIVE_INGESTION_UNAVAILABLE"
+        assert events.status_code == 200
+
+
+class TestLiveIngest:
+    @staticmethod
+    def configure_live_ingest(client, monkeypatch, api_key="test-secret"):
+        monkeypatch.setattr(events_routes, "AXELLE_MODE", "live")
+        monkeypatch.setattr(events_routes, "INGEST_API_KEY", api_key)
+        monkeypatch.setattr(repository_module, "AXELLE_MODE", "live")
+        repository = repository_module.InMemoryRepository()
+        client.application.config["REPOSITORY"] = repository
+        return repository
+
+    def test_ingest_saves_event_and_registers_host(self, client, monkeypatch):
+        repository = self.configure_live_ingest(client, monkeypatch)
+        payload = {
+            "severity": "high",
+            "event_type": "ssh_bruteforce",
+            "host": "live-server",
+            "rule_description": "Repeated SSH failures",
+            "timestamp": "2026-10-03T11:00:00+05:30",
+            "destination_ip": "192.0.2.10",
+            "attempt_count": 3,
+            "mitre": {"technique_id": "T1110"},
+            "raw_event": {"source": "test"},
+        }
+
+        response = client.post(
+            "/api/events/ingest",
+            json=payload,
+            headers={"X-API-Key": "test-secret"},
+        )
+
+        assert response.status_code == 201
+        event = response.get_json()
+        assert event["status"] == "new"
+        assert event["mode"] == "live"
+        assert event["timestamp"] == "2026-10-03T05:30:00+00:00"
+        assert repository.get_event_by_id(event["id"]) is not None
+        host = repository.get_hosts()[0]
+        assert host["hostname"] == "live-server"
+        assert host["ip"] == "192.0.2.10"
+        assert host["os"] == "unknown"
+        assert host["agent_status"] == "online"
+        assert datetime.fromisoformat(host["last_seen"]).utcoffset().total_seconds() == 0
+
+    def test_ingest_rejects_invalid_or_missing_key(self, client, monkeypatch):
+        self.configure_live_ingest(client, monkeypatch)
+        payload = {
+            "severity": "high",
+            "event_type": "ssh_bruteforce",
+            "host": "live-server",
+            "rule_description": "Repeated SSH failures",
+        }
+
+        response = client.post("/api/events/ingest", json=payload)
+
+        assert response.status_code == 401
+        assert response.get_json()["error"]["code"] == "UNAUTHORIZED"
+
+    def test_ingest_is_disabled_without_api_key(self, client, monkeypatch):
+        self.configure_live_ingest(client, monkeypatch, api_key="")
+
+        response = client.post("/api/events/ingest", json={})
+
+        assert response.status_code == 503
+        assert response.get_json()["error"]["code"] == "INGEST_DISABLED"
+
+    def test_ingest_only_works_in_live_mode(self, client, monkeypatch):
+        monkeypatch.setattr(events_routes, "AXELLE_MODE", "demo")
+
+        response = client.post("/api/events/ingest", json={})
+
+        assert response.status_code == 409
+        assert response.get_json()["error"]["code"] == "WRONG_MODE"
 
 
 # ── Error format ────────────────────────────────────────────

@@ -1,6 +1,6 @@
 """Axelle Sentinel — Flask application factory and route registration."""
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
 
 import config
@@ -21,20 +21,6 @@ def create_app() -> Flask:
 
     # CORS — restrictive, configured origins only
     CORS(app, origins=config.CORS_ORIGINS)
-
-    @app.before_request
-    def require_live_ingestion():
-        if (
-            config.AXELLE_MODE == "live"
-            and request.path.startswith("/api/")
-            and request.path != "/api/health"
-        ):
-            return jsonify({
-                "error": {
-                    "code": "LIVE_INGESTION_UNAVAILABLE",
-                    "message": "Live ingestion is not available in Phase 1.",
-                }
-            }), 503
 
     # Register blueprints
     from routes.health import health_bp

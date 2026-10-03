@@ -30,6 +30,10 @@ class Repository(ABC):
         """Return paginated events: {items, total, page, page_size, pages}."""
 
     @abstractmethod
+    def add_event(self, event: Event) -> Event:
+        """Persist an event in the configured repository."""
+
+    @abstractmethod
     def get_event_by_id(self, event_id: str) -> Event | None:
         """Return a single event by ID, or None."""
 

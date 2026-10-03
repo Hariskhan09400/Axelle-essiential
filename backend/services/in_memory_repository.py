@@ -2,13 +2,18 @@
 
 Stores data in memory behind the Repository interface so that
 SQLite/SQLAlchemy can replace it later without touching routes.
+
+Demo mode  -> starts with deterministic mock data.
+Live mode  -> starts empty; real events arrive through add_event().
 """
 
 import math
 import json
+import threading
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
+from config import AXELLE_MODE
 from models.event import Event
 from models.incident import Incident
 from .repository import Repository
@@ -16,21 +21,49 @@ from .mock_data_service import generate_mock_data
 
 
 class InMemoryRepository(Repository):
-    """In-memory data store backed by deterministic mock data."""
+    """In-memory data store (mock data in demo mode, empty in live mode)."""
 
     def __init__(self) -> None:
         self._events: list[Event] = []
         self._incidents: list[Incident] = []
         self._hosts: list[dict] = []
         self._loaded = False
+        self._mode = AXELLE_MODE
+        self._lock = threading.Lock()
 
     def _ensure_loaded(self) -> None:
         if not self._loaded:
-            data = generate_mock_data()
-            self._events = data["events"]
-            self._incidents = data["incidents"]
-            self._hosts = data["hosts"]
+            if self._mode == "demo":
+                data = generate_mock_data()
+                self._events = data["events"]
+                self._incidents = data["incidents"]
+                self._hosts = data["hosts"]
             self._loaded = True
+
+    def add_event(self, event: Event) -> Event:
+        """Store a real event and make sure its host is registered."""
+        self._ensure_loaded()
+        with self._lock:
+            self._events.append(event)
+
+            now = datetime.now(timezone.utc).isoformat()
+            ip = event.destination_ip or event.source_ip
+            for host in self._hosts:
+                if host["hostname"] == event.host:
+                    if ip:
+                        host["ip"] = ip
+                    host["last_seen"] = now
+                    host["agent_status"] = "online"
+                    break
+            else:
+                self._hosts.append({
+                    "hostname": event.host,
+                    "ip": ip or "",
+                    "os": "unknown",
+                    "agent_status": "online",
+                    "last_seen": now,
+                })
+        return event
 
     def get_events(
         self,
@@ -97,7 +130,7 @@ class InMemoryRepository(Repository):
             "page": page,
             "page_size": page_size,
             "pages": pages,
-            "mode": "demo",
+            "mode": self._mode,
         }
 
     def get_event_by_id(self, event_id: str) -> Event | None:
@@ -155,7 +188,7 @@ class InMemoryRepository(Repository):
         ]
 
         return {
-            "mode": "demo",
+            "mode": self._mode,
             "totals": {
                 "events": len(events),
                 "alerts": sum(1 for e in events if e.severity != "info"),
